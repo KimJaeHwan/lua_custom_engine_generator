@@ -1,0 +1,95 @@
+project:
+  name: lua_custom_engine_generator
+  base_dir: .
+
+lua_versions:
+  # - "5.2.4"
+  # - "5.3.6"
+  - "5.4.7"
+
+source_paths:
+  "5.2.4": "/app/lua_source_tmp/lua-5.2.4"
+  "5.3.6": "/app/lua_source_tmp/lua-5.3.6"
+  "5.4.7": "/app/lua_source_tmp/lua-5.4.7"
+
+generation:
+  num_test: 50               # 테스트용 (작게 시작)
+  num_production: 3000       # 전체 생산 목표
+  seed: 42
+
+customization:
+  inline_mode: "macro"
+
+  macro:
+    prefix: LUA_CUSTOM
+    define_suffix: "INLINE_DECRYPTOR"
+  decryptors:
+    - plain
+    - xor_single
+    - xor_multi
+    - rc4_simple
+    - two_stage
+  wrappers:
+    - player_move
+    - damage_calc
+    - packet_handler
+  dummy_levels: [0, 1, 2, 3]
+  remap_levels: [0, 1, 2, 4]
+  inline_chance: 0.7         # 70% 확률로 인라인
+  inline_per_location: true  # 위치별 인라인 고정 가능 (나중에 확장)
+
+
+patch_locations:
+  decryptor:
+    lundump.c:
+      - function: loadBlock # 설명용 스크립트에서 사용되지 않음
+        marker: CUSTOM_DECRYPTOR_CODE_1 # 함수 호출은 하드코딩되어 있으나, 루프를 돌기위해 반드시 있어야하는 마커
+    lzio.c:
+      - function: luaZ_fill
+        marker: CUSTOM_DECRYPTOR_CODE_1 # 
+      - function: luaZ_read
+        marker: CUSTOM_DECRYPTOR_CODE_2
+    lua.c:
+      - function: init function         # 복호화 함수 초기화
+        marker: CUSTOM_DECRYPTOR_CODE_1 # 실질적인 복호화 함수 랜덤 설정 구간
+  dummy:
+    lvm.c:
+      - function: luaV_execute_start
+        marker: CUSTOM_DUMMY_CODE_1
+      - function: luaV_execute_loop
+        marker: CUSTOM_DUMMY_CODE_2
+      - function: luaV_execute_case
+        marker: CUSTOM_DUMMY_CODE_3
+    lundump.c:
+      - function: loadBlock
+        marker: CUSTOM_DUMMY_CODE_1
+      - function: luaU_undump
+        marker: CUSTOM_DUMMY_CODE_2  
+    lzio.c:
+      - function: luaZ_fill
+        marker: CUSTOM_DUMMY_CODE_1
+      - function: luaZ_read
+        marker: CUSTOM_DUMMY_CODE_2
+  remap:
+    lopcodes.h:
+      - function: OpCode enum
+        marker: CUSTOM_REMAP_CODE_1
+  wrappers:
+    linit.c:
+      - function: luaL_openlibs
+        marker: CUSTOM_WRAPPER_REGISTRATION_1
+binary:
+  architectures: ["x86_64", "aarch64"]
+  optimization_levels: ["O0", "O1", "O2", "O3", "Os"]
+  strip_symbols: [true, false]
+  build_parallel: 8
+
+output:
+  dir: binaries
+  metadata: dataset/metadata.jsonl
+  include_callgraph: true
+  include_strings: true
+  include_constants: true
+  include_disasm_lines: 300
+  formats: [elf, obj]  # 추가 추천
+  debug: false         # 추가 추천

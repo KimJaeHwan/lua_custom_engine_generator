@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+
+# Generated outputs and build artifacts
+binaries/
+generated_engines/
+generated_lua_custom/
+dataset/
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.log
+
+# Downloaded / extracted upstream Lua sources
+lua_source_tmp/**
+!lua_source_tmp/
+!lua_source_tmp/*/
+!lua_source_tmp/*/src/
+!lua_source_tmp/*/src/lua.c
+!lua_source_tmp/*/src/linit.c
+!lua_source_tmp/*/src/lopcodes.h
+!lua_source_tmp/*/src/lundump.c
+!lua_source_tmp/*/src/lvm.c
+!lua_source_tmp/*/src/lzio.c
+lua_source_tmp/*.tar.gz
+

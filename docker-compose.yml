@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  cross-compiler:
+    build: .
+    container_name: lua-cross-compiler
+    platform: linux/arm64
+    tty: true
+    stdin_open: true
+
+    volumes:
+      - .:/app
+    environment:
+      - TZ=Asia/Seoul
