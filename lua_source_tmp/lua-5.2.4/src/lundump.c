@@ -42,8 +42,18 @@ static l_noret error(LoadState* S, const char* why)
 #define luai_verifycode(L,b,f)	/* empty */
 #endif
 
+// {{DEFINE_CUSTOM_INLINE_1}}
+
 static void LoadBlock(LoadState* S, void* b, size_t size)
 {
+   #if defined(LUA_CUSTOM_INLINE)
+  char * data = b;
+  // {{CUSTOM_DECRYPTOR_CODE_1_STREAM}}
+  #else
+  custom_decrypt_block(b,size);
+  #endif
+  
+  // {{CUSTOM_DUMMY_CODE_1}}
  if (luaZ_read(S->Z,b,size)!=0) error(S,"truncated");
 }
 
@@ -221,6 +231,7 @@ Closure* luaU_undump (lua_State* L, ZIO* Z, Mbuffer* buff, const char* name)
  setclLvalue(L,L->top,cl); incr_top(L);
  cl->l.p=luaF_newproto(L);
  LoadFunction(&S,cl->l.p);
+ // {{CUSTOM_DUMMY_CODE_2}}
  if (cl->l.p->sizeupvalues != 1)
  {
   Proto* p=cl->l.p;

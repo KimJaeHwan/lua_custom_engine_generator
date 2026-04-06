@@ -227,8 +227,10 @@ OP_EXTRAARG/*	Ax	extra (larger) argument for previous opcode	*/
 
 #define NUM_OPCODES	(cast(int, OP_EXTRAARG) + 1)
 
-
-
+#ifndef LUA_CUSTOM_LOPCODES_H
+#define LUA_CUSTOM_LOPCODES_H
+// {{CUSTOM_REMAP_CODE_1}}
+#endif
 /*===========================================================================
   Notes:
   (*) In OP_CALL, if (B == 0) then B = top. If (C == 0), then `top' is
@@ -286,3 +288,4 @@ LUAI_DDEC const char *const luaP_opnames[NUM_OPCODES+1];  /* opcode names */
 
 
 #endif
+

@@ -541,6 +541,8 @@ void luaV_execute (lua_State *L) {
   cl = clLvalue(ci->func);
   k = cl->p->k;
   base = ci->u.l.base;
+
+  // {{CUSTOM_DUMMY_CODE_1}}
   /* main loop of interpreter */
   for (;;) {
     Instruction i = *(ci->u.l.savedpc++);
@@ -549,11 +551,13 @@ void luaV_execute (lua_State *L) {
         (--L->hookcount == 0 || L->hookmask & LUA_MASKLINE)) {
       Protect(traceexec(L));
     }
+    // {{CUSTOM_DUMMY_CODE_2}}
     /* WARNING: several calls may realloc the stack and invalidate `ra' */
     ra = RA(i);
     lua_assert(base == ci->u.l.base);
     lua_assert(base <= L->top && L->top < L->stack + L->stacksize);
     vmdispatch (GET_OPCODE(i)) {
+      // {{CUSTOM_DUMMY_CODE_3}}
       vmcase(OP_MOVE,
         setobjs2s(L, ra, RB(i));
       )

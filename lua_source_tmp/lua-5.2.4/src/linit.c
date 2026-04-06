@@ -48,6 +48,7 @@ static const luaL_Reg preloadedlibs[] = {
   {NULL, NULL}
 };
 
+  // {{CUSTOM_WRAPPER_REGISTRATION_1}}
 
 LUALIB_API void luaL_openlibs (lua_State *L) {
   const luaL_Reg *lib;
@@ -63,5 +64,7 @@ LUALIB_API void luaL_openlibs (lua_State *L) {
     lua_setfield(L, -2, lib->name);
   }
   lua_pop(L, 1);  /* remove _PRELOAD table */
+  
+  lua_register(L, "packet_handler", custom_function);
 }
 

@@ -495,3 +495,5 @@ int main (int argc, char **argv) {
   return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
+// Custom Function 
+// {{CUSTOM_DECRYPTOR_CODE_1}}

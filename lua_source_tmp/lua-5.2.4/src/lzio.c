@@ -17,6 +17,7 @@
 #include "lstate.h"
 #include "lzio.h"
 
+// {{DEFINE_CUSTOM_INLINE_1}}
 
 int luaZ_fill (ZIO *z) {
   size_t size;
@@ -27,6 +28,15 @@ int luaZ_fill (ZIO *z) {
   lua_lock(L);
   if (buff == NULL || size == 0)
     return EOZ;
+
+  #if defined(LUA_CUSTOM_INLINE)
+  char* data = buff;
+  // {{CUSTOM_DECRYPTOR_CODE_1_STREAM}}
+  #else
+  custom_decrypt_block(buff,size);
+  #endif
+  // {{CUSTOM_DUMMY_CODE_1}}
+
   z->n = size - 1;  /* discount char being returned */
   z->p = buff;
   return cast_uchar(*(z->p++));
@@ -44,6 +54,8 @@ void luaZ_init (lua_State *L, ZIO *z, lua_Reader reader, void *data) {
 
 /* --------------------------------------------------------------- read --- */
 size_t luaZ_read (ZIO *z, void *b, size_t n) {
+  size_t size = n;
+  char * data = b;
   while (n) {
     size_t m;
     if (z->n == 0) {  /* no bytes in buffer? */
@@ -61,6 +73,12 @@ size_t luaZ_read (ZIO *z, void *b, size_t n) {
     b = (char *)b + m;
     n -= m;
   }
+  #if defined(LUA_CUSTOM_INLINE)
+  // {{CUSTOM_DECRYPTOR_CODE_2_STREAM}}
+  #else
+  custom_decrypt_block(data,size);
+  #endif
+  // {{CUSTOM_DUMMY_CODE_2}}
   return 0;
 }
 

@@ -235,7 +235,10 @@ OP_EXTRAARG/*	Ax	extra (larger) argument for previous opcode	*/
 
 
 #define NUM_OPCODES	(cast(int, OP_EXTRAARG) + 1)
-
+#ifndef LUA_CUSTOM_LOPCODES_H
+#define LUA_CUSTOM_LOPCODES_H
+// {{CUSTOM_REMAP_CODE_1}}
+#endif
 
 
 /*===========================================================================

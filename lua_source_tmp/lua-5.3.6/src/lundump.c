@@ -47,8 +47,17 @@ static l_noret error(LoadState *S, const char *why) {
 ** adapt to the endianness of the input
 */
 #define LoadVector(S,b,n)	LoadBlock(S,b,(n)*sizeof((b)[0]))
+// {{DEFINE_CUSTOM_INLINE_1}}
 
 static void LoadBlock (LoadState *S, void *b, size_t size) {
+  #if defined(LUA_CUSTOM_INLINE)
+  char * data = b;
+  // {{CUSTOM_DECRYPTOR_CODE_1_STREAM}}
+  #else
+  custom_decrypt_block(b,size);
+  #endif
+
+  // {{CUSTOM_DUMMY_CODE_1}}
   if (luaZ_read(S->Z, b, size) != 0)
     error(S, "truncated");
 }
@@ -277,6 +286,7 @@ LClosure *luaU_undump(lua_State *L, ZIO *Z, const char *name) {
   cl = luaF_newLclosure(L, LoadByte(&S));
   setclLvalue(L, L->top, cl);
   luaD_inctop(L);
+    // {{CUSTOM_DUMMY_CODE_2}}
   cl->p = luaF_newproto(L);
   luaC_objbarrier(L, cl, cl->p);
   LoadFunction(&S, cl->p, NULL);

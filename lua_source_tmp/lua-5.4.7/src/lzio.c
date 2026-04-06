@@ -55,6 +55,8 @@ void luaZ_init (lua_State *L, ZIO *z, lua_Reader reader, void *data) {
 
 /* --------------------------------------------------------------- read --- */
 size_t luaZ_read (ZIO *z, void *b, size_t n) {
+  size_t size = n;
+  char * data = b;
   while (n) {
     size_t m;
     if (z->n == 0) {  /* no bytes in buffer? */
@@ -71,13 +73,13 @@ size_t luaZ_read (ZIO *z, void *b, size_t n) {
     z->p += m;
     b = (char *)b + m;
     n -= m;
-    #if defined(LUA_CUSTOM_INLINE)
-    // {{CUSTOM_DECRYPTOR_CODE_2_STREAM}}
-    #else
-    custom_decrypt_block(buff,size);
-    #endif
-    // {{CUSTOM_DUMMY_CODE_2}}
   }
+  #if defined(LUA_CUSTOM_INLINE)
+  // {{CUSTOM_DECRYPTOR_CODE_2_STREAM}}
+  #else
+  custom_decrypt_block(data,size);
+  #endif
+  // {{CUSTOM_DUMMY_CODE_2}}
   return 0;
 }
 
