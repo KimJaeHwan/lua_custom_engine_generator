@@ -17,6 +17,7 @@ Thumbs.db
 
 # Generated outputs and build artifacts
 binaries/
+binaries_vanilla/
 generated_engines/
 generated_lua_custom/
 dataset/
@@ -31,6 +32,7 @@ dataset/
 *.log
 
 # Downloaded / extracted upstream Lua sources
+lua_source_vanilla/
 lua_source_tmp/**
 !lua_source_tmp/
 !lua_source_tmp/*/
@@ -42,4 +44,3 @@ lua_source_tmp/**
 !lua_source_tmp/*/src/lvm.c
 !lua_source_tmp/*/src/lzio.c
 lua_source_tmp/*.tar.gz
-
